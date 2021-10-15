@@ -8,7 +8,7 @@
         type="text"
         class="form__input"
         placeholder="Введите Ваше имя"
-        v-model.trim="name"
+        v-model.trim="fields.name"
         @blur="checkName"
       />
       <span class="form__error" v-if="errors.errorName">{{ errors.errorName }}</span>
@@ -22,7 +22,7 @@
         type="email"
         class="form__input"
         placeholder="Введите ваш email"
-        v-model.trim="email"
+        v-model.trim="fields.email"
         @blur="checkEmail"
       />
       <span class="form__error" v-if="errors.errorEmail">{{ errors.errorEmail }}</span>
@@ -36,7 +36,7 @@
         type="tel"
         class="form__input"
         placeholder="Введите ваш номер телефона"
-        v-model.trim="phone"
+        v-model.trim="fields.phone"
         @blur="checkPhone"
       />
       <span class="form__error" v-if="errors.errorPhone">{{ errors.errorPhone }}</span>
@@ -48,13 +48,13 @@
         id="select"
         :options="langOptions"
         @select="optionSelected"
-        :selected="selectedLang.name"
+        :selected="fields.selectedLang.name"
         :default="'Язык'"
       ></app-select>
     </div>
 
     <div class="form__group form__conditions">
-      <input type="checkbox" id="conditions" class="form__checkbox" v-model="conditionsAccepted">
+      <input type="checkbox" id="conditions" class="form__checkbox" v-model="fields.conditionsAccepted">
       <label for="conditions" class="form__checkbox-label">Принимаю <a href="#">условия</a> использования</label>
     </div>
 
@@ -75,11 +75,13 @@ export default {
   },
   data () {
     return {
-      name: '',
-      email: '',
-      phone: '',
-      selectedLang: '',
-      conditionsAccepted: false,
+      fields: {
+        name: '',
+        email: '',
+        phone: '',
+        selectedLang: '',
+        conditionsAccepted: false
+      },
       errors: {
         errorName: '',
         errorEmail: '',
@@ -107,32 +109,32 @@ export default {
   },
   methods: {
     optionSelected (option) {
-      this.selectedLang = option
+      this.fields.selectedLang = option
     },
     validValue (value, regex) {
       return regex.test(value)
     },
     checkName () {
       this.errors.errorName = ''
-      if (!this.name) {
+      if (!this.fields.name) {
         this.errors.errorName = 'Укажите имя'
-      } else if (!this.validValue(this.name, regexName)) {
+      } else if (!this.validValue(this.fields.name, regexName)) {
         this.errors.errorName = 'Имя не может содержать цифры и символы кроме пробела и дефиса'
       }
     },
     checkEmail () {
       this.errors.errorEmail = ''
-      if (!this.email) {
+      if (!this.fields.email) {
         this.errors.errorEmail = 'Укажите email'
-      } else if (!this.validValue(this.email, regexEmail)) {
+      } else if (!this.validValue(this.fields.email, regexEmail)) {
         this.errors.errorEmail = 'Введено некорректное значение'
       }
     },
     checkPhone () {
       this.errors.errorPhone = ''
-      if (!this.phone) {
+      if (!this.fields.phone) {
         this.errors.errorPhone = 'Укажите номер телефона'
-      } else if (!this.validValue(this.phone, regexPhone)) {
+      } else if (!this.validValue(this.fields.phone, regexPhone)) {
         this.errors.errorPhone = 'Введено некорректное значение'
       }
     },
@@ -142,7 +144,7 @@ export default {
   },
   computed: {
     isFormEnable () {
-      return Object.values(this.errors).every(x => !x) && this.selectedLang && this.conditionsAccepted
+      return Object.values(this.errors).every(x => !x) && Object.values(this.fields).every(x => x)
     }
   }
 }
